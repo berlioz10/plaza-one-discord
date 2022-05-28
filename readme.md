@@ -1,28 +1,34 @@
-# Plaza One Discord
+# Plaza.One Discord
 
-Foobar is a Python library for dealing with word pluralization.
+**Plaza.One Discord** is a bot for Discord that feeds beautiful tunes from [plaza.one](https://plaza.one) directly into your server's voice chat.
+
+## Features
+- Real-time sync with [plaza.one](https://plaza.one)
+- Get feed of current song, artist and timestamp
+- Functions for starting, pausing and stopping music
 
 ## Installation
 
-Use the package manager [pip](https://pip.pypa.io/en/stable/) to install foobar.
-
+1. Install the **discord.py** library
 ```bash
-pip install foobar
+pip install discord.py
 ```
 
-## Usage
+2. Clone this repository
 
-```python
-import foobar
+```bash
+git clone https://github.com/berlioz10/plaza-one-discord
+```
 
-# returns 'words'
-foobar.pluralize('word')
+3. Create a new **discord.properties** file at the root of the project containing your bot credentials
+```
+[Discord]
+token=YOUR_TOKEN_HERE
+```
 
-# returns 'geese'
-foobar.pluralize('goose')
-
-# returns 'phenomenon'
-foobar.singularize('phenomena')
+4. Compile and run
+```bash
+python -u main.py
 ```
 
 ## Contributing

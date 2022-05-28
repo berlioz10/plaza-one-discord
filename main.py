@@ -2,7 +2,7 @@ import configparser
 config = configparser.RawConfigParser()
 config.read('discord.properties')
 
-token = config.get('token')
+token = config.get('Discord', 'token')
 
 import discord
 from discord.ext import commands

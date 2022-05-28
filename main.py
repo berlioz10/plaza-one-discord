@@ -1,4 +1,8 @@
-token = 'OTgwMTYzODc1Njk1NjQ0Njcz.G4-oV7.f_7vn6t9s-3tPX_XHRwSH6T3SMKwbhnzurnbrI'
+import configparser
+config = configparser.RawConfigParser()
+config.read('discord.properties')
+
+token = config.get('token')
 
 import discord
 from discord.ext import commands

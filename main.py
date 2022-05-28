@@ -1,4 +1,6 @@
 import configparser
+
+from request_status import get_song_details
 config = configparser.RawConfigParser()
 config.read('discord.properties')
 
@@ -51,6 +53,15 @@ async def stop(message):
         embedVar = discord.Embed(title="Plaza One Radio", description="The bot is not in a voice channel", color=0xcc0066)
         await message.channel.send(embed=embedVar)
 
+@bot.command(name = 'status')
+async def status(message):
+    artist, title, album, seconds, length = get_song_details()
+    embedVar = discord.Embed(title="Plaza One Radio", description='Status of the current song:', color=0xcc99ff)
+    embedVar.add_field(name="Artist", value=artist, inline=True)
+    embedVar.add_field(name="Title", value=title, inline=True)
+    embedVar.add_field(name="Album", value=album, inline=False)
+    embedVar.add_field(name="Timestamp", value=str(seconds // 60) + ":" + str(seconds % 60) + "/" + str(length // 60) + ":" + str(length % 60), inline=False)
+    await message.channel.send(embed=embedVar)
 
 @bot.event
 async def on_ready():

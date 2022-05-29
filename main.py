@@ -31,17 +31,17 @@ async def play(message):
         voice_client = await voice.connect()
     else:
         if voice_client.is_connected() and voice_client.channel == channel:
-            embedVar = discord.Embed(title="Plaza One Radio", description="The bot is already on \"" + str(voice_client.channel) + '\" channel', color=0xcc99ff)
+            embedVar = discord.Embed(title="Plaza One Radio", description="The bot is already on **" + str(voice_client.channel) + '** channel', color=0xcc99ff)
             await message.channel.send(embed=embedVar)
         else:
             await voice_client.move_to(channel)
-            embedVar = discord.Embed(title="Plaza One Radio", description="The bot moved to \"" + str(message.author.voice.channel) + '\" channel', color=0xcc99ff)
+            embedVar = discord.Embed(title="Plaza One Radio", description="The bot moved to **" + str(message.author.voice.channel) + '** channel', color=0xcc99ff)
             await message.channel.send(embed=embedVar)
         return
         
     source = discord.FFmpegPCMAudio("http://radio.plaza.one/mp3", executable="ffmpeg")
     voice_client.play(source, after=None)
-    embedVar = discord.Embed(title="Plaza One Radio", description="The bot started playing on \"" + str(message.author.voice.channel) + '\" channel', color=0xcc99ff)
+    embedVar = discord.Embed(title="Plaza One Radio", description="The bot started playing on **" + str(message.author.voice.channel) + '** channel', color=0xcc99ff)
     await message.channel.send(embed=embedVar)
 
 @bot.command(name = 'stop')
@@ -51,7 +51,7 @@ async def stop(message):
         if voice_client.is_connected():
             voice_client.stop()
             await voice_client.disconnect()
-            embedVar = discord.Embed(title="Plaza One Radio", description="The bot left the voice channel \"" + str(voice_client.channel) + '\"', color=0xcc99ff)
+            embedVar = discord.Embed(title="Plaza One Radio", description="The bot left the voice channel **" + str(voice_client.channel) + '**', color=0xcc99ff)
             await message.channel.send(embed=embedVar)
     else:
         embedVar = discord.Embed(title="Plaza One Radio", description="The bot is not in a voice channel", color=0xcc0066)

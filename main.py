@@ -13,7 +13,7 @@ token = config.get('Discord', 'token')
 import discord
 from discord.ext import commands
 
-bot = commands.Bot(command_prefix='po ')
+bot = commands.Bot(command_prefix='po ', description='po help')
 
 @bot.command(name = 'commands')
 async def help(message):
@@ -161,5 +161,6 @@ async def news(message):
 @bot.event
 async def on_ready():
     print(f'{bot.user} has connected to Discord!')
+    await bot.change_presence(activity= discord.Game(name= 'po help'))
 
 bot.run(token)

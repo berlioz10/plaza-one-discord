@@ -1,4 +1,5 @@
 import configparser
+from threading import Thread
 import time
 from request_status import get_song_details
 from song_model import Song
@@ -59,18 +60,24 @@ async def stop(message):
 last_status_id = None
 last_song_ends_at = None
 last_song_played:Song = None
+status_guilds_connected = []
+
+def create_embed():
+    global last_song_played
+    embedVar = discord.Embed(title="Plaza One Radio", description='', color=0xcc99ff)
+    embedVar.add_field(name="Album", value=last_song_played.album, inline=False)
+    embedVar.set_thumbnail(url=last_song_played.img_url)
+    embedVar.add_field(name="Artist", value=last_song_played.artist, inline=True)
+    embedVar.add_field(name="Title", value=last_song_played.title, inline=True)
+    embedVar.add_field(name="Timestamp", value=str(last_song_played.seconds // 60).zfill(2) + ":" + str(last_song_played.seconds % 60).zfill(2)
+    + "/" + str(last_song_played.length // 60).zfill(2) + ":" + str(last_song_played.length % 60).zfill(2), inline=False)
+    return embedVar
 
 async def send_status_message_without_request(message):
     global last_song_played, last_status_id, last_song_ends_at
     seconds = last_song_played.length - (last_song_ends_at - time.time())
-    seconds = int(seconds)
-    embedVar = discord.Embed(title="Plaza One Radio", description='Status of the current song:', color=0xcc99ff)
-    embedVar.add_field(name="Artist", value=last_song_played.artist, inline=True)
-    embedVar.add_field(name="Title", value=last_song_played.title, inline=True)
-    embedVar.add_field(name="Album", value=last_song_played.album, inline=False)
-    embedVar.set_image(url=last_song_played.img_url)
-    embedVar.add_field(name="Timestamp", value=str(seconds // 60).zfill(2) + ":" + str(seconds % 60).zfill(2)
-    + "/" + str(last_song_played.length // 60).zfill(2) + ":" + str(last_song_played.length % 60).zfill(2), inline=False)
+    last_song_played.seconds = int(seconds)
+    embedVar = create_embed()
 
     if last_status_id != None:
         message = await message.fetch_message(last_status_id)
@@ -82,12 +89,7 @@ async def send_status_message(message, replace_last = True):
     last_song_played = Song(artist, title, album, seconds, length, img_url)
     last_song_ends_at = time.time() + length - seconds - 1
 
-    embedVar = discord.Embed(title="Plaza One Radio", description='Status of the current song:', color=0xcc99ff)
-    embedVar.add_field(name="Artist", value=artist, inline=True)
-    embedVar.add_field(name="Title", value=title, inline=True)
-    embedVar.add_field(name="Album", value=album, inline=False)
-    embedVar.set_image(url=img_url)
-    embedVar.add_field(name="Timestamp", value=str(seconds // 60).zfill(2) + ":" + str(seconds % 60).zfill(2) + "/" + str(length // 60).zfill(2) + ":" + str(length % 60).zfill(2), inline=False)
+    embedVar = create_embed()
 
     if replace_last:
         if last_status_id != None:
@@ -106,24 +108,34 @@ continue_fetch_status = True
 
 @bot.command(name = 'status')
 async def status(message):
-    await send_status_message(message=message)
 
     global continue_fetch_status, last_song_ends_at
+
+    continue_fetch_status = False
+    
+    await send_status_message(message=message)
+
     continue_fetch_status = True
 
     while continue_fetch_status:
+        time.sleep(3)
         if time.time() > last_song_ends_at:
             await send_status_message(message=message, replace_last= False)
         else:
             await send_status_message_without_request(message)
-        time.sleep(3)
 
 @bot.command(name = 'status_stop')
 async def status_stop(_):
     global continue_fetch_status
     continue_fetch_status = False
 
-
+@bot.command(name = 'test')
+async def test(message):
+    try:
+        time.sleep(10)
+        await message.send("Test finished")
+    except Exception as ex:
+        await message.send(ex)
 
 @bot.event
 async def on_ready():

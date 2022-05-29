@@ -1,7 +1,8 @@
 import configparser
 from threading import Thread
 import time
-from request_status import get_song_details
+from api import get_news, get_song_status
+from html_to_markdown import html_to_markdown
 from song_model import Song
 
 config = configparser.RawConfigParser()
@@ -14,10 +15,20 @@ from discord.ext import commands
 
 bot = commands.Bot(command_prefix='po ')
 
+@bot.command(name = 'commands')
+async def help(message):
+    embed = discord.Embed(title="Plaza.One Help", color=0x000000)
+    embed.add_field(name='po play', value= 'Join voice channel and play music from plaza.one', inline=False)
+    embed.add_field(name='po stop', value= 'Quit playing music on current voice channel', inline=False)
+    embed.add_field(name='po status', value= 'Get and continuously update current song and timestamp', inline=False)
+    embed.add_field(name='po news', value= 'Get the 3 most recent news articles from plaza.one', inline=False)
+
+    await message.channel.send(embed= embed)
+
 @bot.command(name = 'play')
 async def play(message):
     if message.author.voice == None:
-        embedVar = discord.Embed(title="Plaza One Radio", description="You need to be in a voice channel to use this command!", color=0xcc0066)
+        embedVar = discord.Embed(title="Plaza.One Radio", description="You need to be in a voice channel to use this command!", color=0xcc0066)
         await message.channel.send(embed=embedVar)
         return
 
@@ -85,7 +96,7 @@ async def send_status_message_without_request(message):
 
 async def send_status_message(message, replace_last = True):
     global last_status_id, last_song_ends_at, last_song_played
-    artist, title, album, seconds, length, img_url = get_song_details()
+    artist, title, album, seconds, length, img_url = get_song_status()
     last_song_played = Song(artist, title, album, seconds, length, img_url)
     last_song_ends_at = time.time() + length - seconds - 1
 
@@ -136,6 +147,16 @@ async def test(message):
         await message.send("Test finished")
     except Exception as ex:
         await message.send(ex)
+
+@bot.command(name = 'news')
+async def news(message):
+    news = get_news()
+
+    embed = discord.Embed(title="Plaza.One Latest News", color=0x00eaff)
+    for article in news:
+        embed.add_field(name=article['author'], value= html_to_markdown(article['text']), inline=False)
+
+    await message.channel.send(embed= embed)
 
 @bot.event
 async def on_ready():

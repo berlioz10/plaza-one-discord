@@ -19,14 +19,16 @@ pip install discord.py
 ```bash
 git clone https://github.com/berlioz10/plaza-one-discord
 ```
+3. Download **ffmpeg** ( used for streaming the music) from [here](https://bandcamp.com/).
+You can follow [this guide](https://www.wikihow.com/Install-FFmpeg-on-Windows) for installation.
 
-3. Create a new **discord.properties** file at the root of the project containing your bot credentials
+4. Create a new **discord.properties** file at the root of the project containing your bot credentials
 ```
 [Discord]
 token=YOUR_TOKEN_HERE
 ```
 
-4. Compile and run
+5. Compile and run
 ```bash
 python -u main.py
 ```

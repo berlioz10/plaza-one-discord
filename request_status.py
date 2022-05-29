@@ -8,4 +8,4 @@ def get_song_details():
     response = requests.get(url)
     song = json.loads(response.text)['song']
 
-    return song['artist'], song['title'], song['album'], song['position'], song['length']
+    return song['artist'], song['title'], song['album'], song['position'], song['length'], song['artwork_src']

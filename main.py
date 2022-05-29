@@ -32,9 +32,11 @@ async def play(message):
         if voice_client.is_connected() and voice_client.channel == channel:
             embedVar = discord.Embed(title="Plaza One Radio", description="The bot is already on \"" + str(voice_client.channel) + '\" channel', color=0xcc99ff)
             await message.channel.send(embed=embedVar)
-            return
-            
-        await voice_client.move_to(channel)
+        else:
+            await voice_client.move_to(channel)
+            embedVar = discord.Embed(title="Plaza One Radio", description="The bot moved to \"" + str(message.author.voice.channel) + '\" channel', color=0xcc99ff)
+            await message.channel.send(embed=embedVar)
+        return
         
     source = discord.FFmpegPCMAudio("http://radio.plaza.one/mp3", executable="ffmpeg")
     voice_client.play(source, after=None)

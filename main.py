@@ -13,7 +13,7 @@ token = config.get('Discord', 'token')
 import discord
 from discord.ext import commands
 
-bot = commands.Bot(command_prefix='po ', description='po help')
+bot = commands.Bot(command_prefix='po ', description='po help', intents=discord.Intents.all())
 
 @bot.command(name = 'commands')
 async def help(message):
